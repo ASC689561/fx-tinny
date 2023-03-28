@@ -1,0 +1,42 @@
+Metadata-Version: 2.1
+Name: MetaTrader5
+Version: 5.0.36
+Summary: API Connector to MetaTrader 5 Terminal
+Home-page: https://www.metatrader5.com
+Author: MetaQuotes Ltd.
+Author-email: plugins@metaquotes.net
+Maintainer: MetaQuotes Ltd.
+Maintainer-email: plugins@metaquotes.net
+License: MIT
+Project-URL: Documentation, https://www.mql5.com/en/docs/integration/python_metatrader5
+Project-URL: Forum, https://www.mql5.com/en/forum
+Keywords: metatrader mt5 metaquotes mql5 forex currency exchange
+Platform: Windows
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Topic :: Office/Business :: Financial
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >=3.5, <4
+Description-Content-Type: text/x-rst
+Requires-Dist: numpy (>=1.7)
+
+`MetaTrader <https://www.metatrader5.com>`_ is a multi-asset platform for trading in the Forex market and stock exchanges.
+In addition to the basic trading functionality which enables access to financial markets, the platform provides powerful
+tools for analyzing vast amounts of price data. These include charts, technical indicators, graphical objects and the
+built-in C-like MQL5 programming language.
+
+The platform architecture enables the compact storage and efficient management of price data related to hundreds and 
+thousands of financial instruments with a dozens of years of historical data. With the MetaTrader 5 for Python package,
+you can analyze this information in your preferred environment. 
+
+Install the package and request arrays of bars and ticks with ease. Type the desired financial security name and date
+in a command, and receive a complete data array. All the necessary related operations, such as the platform launch,
+data synchronization with the broker's server and data transfer to the Python environment will be performed automatically.
+
+For full documentation, see https://www.mql5.com/en/docs/integration/python_metatrader5
+
