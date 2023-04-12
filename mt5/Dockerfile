@@ -3,7 +3,7 @@ RUN apt-get update && apt-get install -y supervisor git && rm -rf /var/lib/apt/l
 
 COPY ./mt5/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# COPY ./mt5/py /root/.wine/drive_c/py
+COPY ./mt5/py /root/.wine/drive_c/py
 
 RUN mkdir -p /config/.wine && WINEPREFIX=/config/.wine winecfg
 
@@ -11,7 +11,7 @@ WORKDIR /root/.wine/drive_c/py/
 
 RUN apt-get update && apt-get install -y wget software-properties-common xvfb 
 RUN WINEPREFIX=/config/.wine xvfb-run wine /root/.wine/drive_c/py/icmarketssc5setup.exe /auto || true
-RUN WINEPREFIX=/config/.wine wine /root/.wine/drive_c/py/python.exe -m pip install redis pandas
-
+RUN WINEPREFIX=/config/.wine wine /root/.wine/drive_c/py/python.exe -m pip install redis pandas rpyc
+RUN apt-get update && apt-get remove winbind && apt-get install -y winbind && rm -rf /var/lib/apt/lists/*
 
 CMD ["/usr/bin/supervisord"]

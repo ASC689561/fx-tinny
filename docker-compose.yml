@@ -1,35 +1,22 @@
 version: "3.3"
 services:
-  redis:
-    image: redis:6.2-alpine
-    restart: always
-    ports:
-      - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning
-
   mt5:
     build:
       context: .
       dockerfile: mt5/Dockerfile
-    environment:
-     - ACCOUNT=51021509
-     - PASSWORD=PWiwC55p
-     - SERVER=ICMarketsSC-Demo
     ports:
+      - 5678:5678
       - 8080:8080
-    volumes:
-      - ./mt5/py:/root/.wine/drive_c/py
-    depends_on:
-    - redis
 
-  dashboard:
-    build:
-      context: .
-      dockerfile: dashboard/Dockerfile
-    ports:
-      - 8501:8501
-    volumes:
-    - ./dashboard/dashboard:/code
-    depends_on:
-    - redis
-    - mt5
+
+  # dashboard:
+  #   build:
+  #     context: .
+  #     dockerfile: dashboard/Dockerfile
+  #   ports:
+  #     - 8501:8501
+  #   volumes:
+  #   - ./dashboard/dashboard:/code
+  #   depends_on:
+  #   - redis
+  #   - mt5
