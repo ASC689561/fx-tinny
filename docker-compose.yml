@@ -1,22 +1,18 @@
-version: "3.3"
 services:
   mt5:
+    image: asc686f61/fx-mt5:test
     build:
       context: .
       dockerfile: mt5/Dockerfile
     ports:
-      - 5678:5678
-      - 8080:8080
-
-
-  # dashboard:
-  #   build:
-  #     context: .
-  #     dockerfile: dashboard/Dockerfile
-  #   ports:
-  #     - 8501:8501
-  #   volumes:
-  #   - ./dashboard/dashboard:/code
-  #   depends_on:
-  #   - redis
-  #   - mt5
+      - "8080:8080"
+      - "5929:8080"
+      - "8000:8000"
+    # volumes:
+    #   - ./docker/mt5/:/root/.wine/drive_c/fx
+    environment:
+      - ACCOUNT=
+      - PASSWORD=
+      - SERVER=
+    deploy:
+      replicas: 1
