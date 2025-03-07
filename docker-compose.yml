@@ -4,9 +4,10 @@ services:
     build:
       context: .
       dockerfile: mt5/Dockerfile
+      network: host
     ports:
       - "8080:8080"
-      - "5929:8080"
+      - "5928:8080"
       - "8000:8000"
     # volumes:
     #   - ./docker/mt5/:/root/.wine/drive_c/fx

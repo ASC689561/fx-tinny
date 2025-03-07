@@ -4,56 +4,85 @@ import time
 import uvicorn
 import traceback
 from datetime import datetime, timedelta
-from models import BuyRequest, CloseRequest, SellRequest, GetLastCandleRequest, GetLastDealsHistoryRequest
+from models import (
+    BuyRequest,
+    CloseRequest,
+    SellRequest,
+    GetLastCandleRequest,
+    GetLastDealsHistoryRequest,
+)
 import socket
 import json
 import logging
 import os
 from contextlib import asynccontextmanager
 
+log_file_path = "./fxscript.log"
+
+logging.basicConfig(
+    filename=log_file_path,
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
+logging.info("Starting api")
+
 
 while True:
     try:
         from fastapi import FastAPI
+
+        logging.warning("wait fastapi done")
         break
     except:
-        print('waiting install fastapi')
+        logging.warning("waiting install fastapi")
         import time
+
         time.sleep(5)
 
 while True:
     try:
         import MetaTrader5 as mt5
+
+        logging.warning("waiting MetaTrader5 done")
         break
     except:
-        print('waiting install MetaTrader5')
+        logging.warning("waiting install MetaTrader5")
         import time
+
         time.sleep(5)
 
-path="/root/.wine/drive_c/Program Files/MetaTrader 5 IC Markets Global/terminal64.exe"
+path = "/root/.wine/drive_c/Program Files/MetaTrader 5 IC Markets Global/terminal64.exe"
 
 while not os.path.exists(path):
     logging.warning(f"Waiting for file: {path}")
     time.sleep(5)  # Đợi 5 giây trước khi kiểm tra lại
+logging.warning(f"Waiting  {path} done")
 
- 
+
 tf_dic = {}
 for v in dir(mt5):
-    if v.startswith('TIMEFRAME_'):
-        tf = v.replace('TIMEFRAME_', '')
+    if v.startswith("TIMEFRAME_"):
+        tf = v.replace("TIMEFRAME_", "")
         symbol, num = tf[0], tf[1:]
         tf_dic[num + symbol.lower()] = int(getattr(mt5, v))
 
 for v in range(10):
-    success = mt5.initialize(path,
-                             login=int(os.environ['ACCOUNT']),
-                             password=os.environ['PASSWORD'],
-                             server=os.environ['SERVER'])
+    logging.info(f"Starting mt5")
+
+    success = mt5.initialize(
+        path,
+        login=int(os.environ["ACCOUNT"]),
+        password=os.environ["PASSWORD"],
+        server=os.environ["SERVER"],
+    )
     if not success:
         logging.warning(f"Cannot init mt5: {mt5.last_error()}")
         time.sleep(10)
         continue
-    break
+    else:
+        logging.info(f"Starting mt5 done")
+        break
 
 # # init kazzoo
 # kazoo_client = KazooClient()
@@ -68,7 +97,6 @@ for v in range(10):
 #     except:
 #         logging.warning(f"error when connect zk: {os.environ['ZOOKEEPER']}, {traceback.format_exc()}")
 
- 
 
 # def thread_function(name):
 #     node_path = f"/account/{os.environ['ACCOUNT']}/running"
@@ -100,6 +128,7 @@ async def lifespan(app: FastAPI):
     # node_path = f"/account/{os.environ['ACCOUNT']}/running"
     # client.delete(node_path)
 
+
 app = FastAPI(lifespan=lifespan)
 
 
@@ -108,6 +137,7 @@ def healthz():
     if "login" in mt5.account_info()._asdict():
         return "ok"
     raise Exception(str(mt5.last_error()))
+
 
 @app.get("/")
 def read_root():
@@ -150,13 +180,14 @@ def deals_all(inp: GetLastDealsHistoryRequest):
 
 @app.get("/account/login")
 def account_login():
-    success = mt5.initialize(path="/config/.winecfg_mt5/drive_c/Program Files/MetaTrader 5 IC Markets Global/terminal64.exe",
-                             login=int(os.environ['ACCOUNT']),
-                             password=os.environ['PASSWORD'],
-                             server=os.environ['SERVER'])
+    success = mt5.initialize(
+        path="/config/.winecfg_mt5/drive_c/Program Files/MetaTrader 5 IC Markets Global/terminal64.exe",
+        login=int(os.environ["ACCOUNT"]),
+        password=os.environ["PASSWORD"],
+        server=os.environ["SERVER"],
+    )
     if not success:
-        return {"success":   success,
-                "last_error": mt5.last_error()}
+        return {"success": success, "last_error": mt5.last_error()}
     return {"success": success}
 
 
@@ -277,8 +308,8 @@ def trade_close(request: CloseRequest):
         return mt5.last_error()
 
 
-if __name__ == '__main__':
-    uvicorn.run("api:app", port=8000, host='0.0.0.0', reload=False, log_level="debug")
+if __name__ == "__main__":
+    uvicorn.run("api:app", port=8000, host="0.0.0.0", reload=False, log_level="debug")
 
 
 # uvicorn app:app --host 0.0.0.0 --port 8000 --workers 4 --reload --reload-include *.yml"
