@@ -1,9 +1,20 @@
-FROM msjpq/wine-vnc:bionic
+#FROM msjpq/wine-vnc:bionic
+FROM msjpq/kde-vnc:focal
 
 WORKDIR /root/.wine/drive_c/
 RUN apt-get update && apt-get install -y sudo supervisor git wget software-properties-common xvfb && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get remove winbind && apt-get install -y winbind && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+
+# 🔄 Installation de Wine 8.14+ (contient le correctif pour crealf)
+RUN dpkg --add-architecture i386 && \
+    mkdir -pm755 /etc/apt/keyrings && \
+    wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key && \
+    wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/focal/winehq-focal.sources && \
+    apt-get update && \
+    apt-get install -y --install-recommends winehq-staging && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV WINEPREFIX=/root/.wine \
     WINEDLLOVERRIDES="mscoree=" \
